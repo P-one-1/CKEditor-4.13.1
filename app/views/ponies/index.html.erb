@@ -1,0 +1,89 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Ponies</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Profession</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @ponies.each do |pony| %>
+      <tr>
+        <td><%= pony.name %></td>
+        <td><%= pony.profession %></td>
+        <td><%= link_to 'Show', pony %></td>
+        <td><%= link_to 'Edit', edit_pony_path(pony) %></td>
+        <td><%= link_to 'Destroy', pony, method: :delete, data: { confirm: 'Are you sure?' }, :remote => true, :class => 'delete_pony' %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Pony', new_pony_path %>
+<script type="text/javascript">
+
+$(document).ready(function(){
+$('.delete_pony').click(function(){
+  var a=$(this).attr('value');
+  debugger
+ $.ajax({
+    url: "/destroy_pony",   
+    type: "get",
+    
+    data: { id: a }
+  })
+  .done(function(data){
+    alert(data)
+  })
+  .fail(function(data){
+    debugger;
+    alert(data)
+  })
+});
+});
+</script> -->
+<script type="text/javascript">
+    // var csrf_token = function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))};
+  $('.delete_pony').click(function(){
+
+    var id = this.value;
+    var row = this.parentElement.parentElement;
+    var url = `/ponies/${id}` ;
+  $.ajax(url, {
+    type: 'DELETE',  // http method // data to submit
+     headers: {
+      'Content-type': 'application/json',
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    },
+    success: function (data) {
+      if(data.code == 200){
+        $(row).remove();
+        alert("Deleted success");
+      }
+      else if(data.code == 201){
+        alert("Some issues preventing to delete the record.")
+        $.each(data.errors,function(i,k){
+          alert(k);
+        });
+        // $('p').append('status: ' + status + ', data: ' + data);
+      }
+      else{
+        console.log("Something unexpected happened.",data)
+        console.log(data)
+      }
+    },
+    error: function (jqXhr, textStatus, errorMessage) {
+      console.log(`jqXhr: ${jqXhr},textStatus: ${textStatus},errorMessage: ${errorMessage}`);
+
+            // $('p').append('Error' + errorMessage);
+    }
+});
+});
+</script>

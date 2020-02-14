@@ -1,0 +1,26 @@
+<%= form_with(model: pony, local: true) do |form| %>
+  <% if pony.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(pony.errors.count, "error") %> prohibited this pony from being saved:</h2>
+
+      <ul>
+      <% pony.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= form.label :name %>
+  <%# <%=form.cktext_area :name, value: 'Default value', id: 'sometext'%>
+  <%= form.cktext_area 'name', ckeditor: {toolbar: 'full'} %> 
+
+  <div class="field">
+    <%= form.label :profession %>
+    <%= form.text_field :profession %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>
